@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A javascript port of reliable.io",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "fuzz": "DEBUG=reliable.io node fuzz",
     "soak": "DEBUG=reliable.io node soak",
