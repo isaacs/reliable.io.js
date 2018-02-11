@@ -1,0 +1,29 @@
+{
+  "name": "reliable.io",
+  "version": "1.0.0",
+  "description": "A javascript port of reliable.io",
+  "main": "index.js",
+  "scripts": {
+    "fuzz": "DEBUG=reliable.io node fuzz",
+    "soak": "DEBUG=reliable.io node soak",
+    "test": "tap test",
+    "test2": "DEBUG=reliable.io node ./node_modules/.bin/tap test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mreinstein/reliable.io.js.git"
+  },
+  "author": "Mike Reinstein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mreinstein/reliable.io.js/issues"
+  },
+  "homepage": "https://github.com/mreinstein/reliable.io.js#readme",
+  "engines": {
+    "node": ">= 6.x.x"
+  },
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "tap": "^11.1.0"
+  }
+}
