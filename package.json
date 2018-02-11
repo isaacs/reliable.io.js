@@ -6,8 +6,7 @@
   "scripts": {
     "fuzz": "DEBUG=reliable.io node fuzz",
     "soak": "DEBUG=reliable.io node soak",
-    "test": "tap test",
-    "test2": "DEBUG=reliable.io node ./node_modules/.bin/tap test"
+    "test": "DEBUG=reliable.io node ./node_modules/.bin/tap test"
   },
   "repository": {
     "type": "git",
