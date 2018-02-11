@@ -62,7 +62,7 @@ test('packet_header', function(t) {
 
   bytes_written = endpoint.reliable_write_packet_header( packet_data, write_sequence, write_ack, write_ack_bits )
 
-  // TODO: why does this check fail?
+  // TODO: I think this check fails due to lacking fragmentation/re-assembly support
   //t.equal(bytes_written, 1 + 2 + 1 + 1)
 
 
@@ -81,7 +81,7 @@ test('packet_header', function(t) {
 
   bytes_written = endpoint.reliable_write_packet_header(packet_data, write_sequence, write_ack, write_ack_bits)
 
-  // TODO: why does this check fail?
+  // TODO: I think this check fails due to lacking fragmentation/re-assembly support
   //t.equal( bytes_written, 1 + 2 + 1 )
 
 
