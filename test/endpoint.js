@@ -1,6 +1,5 @@
 'use strict'
 
-//const assert   = require('../lib/assert')
 const test     = require('tap').test
 const endpoint = require('../lib/endpoint')
 
