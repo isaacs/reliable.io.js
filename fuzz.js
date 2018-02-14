@@ -1,6 +1,7 @@
 'use strict'
 
 const endpoint = require('./lib/endpoint')
+const pool     = require('./lib/pool-uint8array')
 
 
 const MAX_PACKET_BYTES = 1024 //(16*1024)
@@ -22,10 +23,6 @@ function random_int(a, b) {
 }
 
 
-let global_time = 100.0
-
-let e
-
 function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes ) {
 
 }
@@ -46,11 +43,8 @@ function fuzz_initialize() {
 }
 
 
-function fuzz_iteration(time) {
-  //console.log( "." );
-  //fflush( stdout );
-
-  let packet_data = new Uint8Array(MAX_PACKET_BYTES)
+function fuzz_iteration() {
+  let packet_data = pool.malloc(MAX_PACKET_BYTES)
 
   let packet_bytes = random_int(1, MAX_PACKET_BYTES)
 
@@ -58,40 +52,24 @@ function fuzz_iteration(time) {
     packet_data[i] = random_int(0, 255)
 
   endpoint.reliable_endpoint_receive_packet(e, packet_data, packet_bytes)
-  endpoint.reliable_endpoint_update(e, time)
+  endpoint.reliable_endpoint_update(e, global_time)
   endpoint.num_acks = 0
+
+  global_time += delta_time
+
+  pool.free(packet_data)
+
+  setTimeout(fuzz_iteration, 0)
 }
 
 
 function main() {
-  console.log( "[fuzz]\n" );
-
-  let num_iterations = -1
-
-  /*
-  //if(process.env.argv[1])
-  if ( argc == 2 )
-      num_iterations = atoi( argv[1] );
-  */
-
+  console.log( "[fuzz]\n" )
   fuzz_initialize()
-
-  let delta_time = 0.1
-
-  if (num_iterations > 0 ) {
-    for (let  i = 0; i < num_iterations; ++i ) {
-      fuzz_iteration( global_time )
-      global_time += delta_time
-    }
-  } else {
-    while (true) {
-      fuzz_iteration(global_time)
-      global_time += delta_time
-    }
-  }
-
-  return 0
+  fuzz_iteration()
 }
 
+
+let e, global_time = 100.0, delta_time = 0.1
 
 main()

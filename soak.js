@@ -1,6 +1,7 @@
 'use strict'
 
 const endpoint = require('./lib/endpoint')
+const pool     = require('./lib/pool-uint8array')
 
 
 const MAX_PACKET_BYTES = (16*1024)
@@ -20,11 +21,6 @@ function random_int(a, b) {
   assert( result <= b )
   return result
 }
-
-
-let global_time = 100.0
-
-let global_context, e
 
 
 function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes ) {
@@ -110,8 +106,8 @@ function soak_initialize()
 }
 
 
-function soak_iteration(time) {
-  let packet_data = new Uint8Array(MAX_PACKET_BYTES)
+function soak_iteration() {
+  const packet_data = pool.malloc(MAX_PACKET_BYTES)
   packet_data.fill(0)
 
   let sequence = global_context.client.sequence
@@ -124,43 +120,25 @@ function soak_iteration(time) {
   packet_bytes = generate_packet_data( sequence, packet_data )
   endpoint.reliable_endpoint_send_packet( global_context.server, packet_data, packet_bytes )
 
-  endpoint.reliable_endpoint_update( global_context.client, time );
-  endpoint.reliable_endpoint_update( global_context.server, time );
+  endpoint.reliable_endpoint_update( global_context.client, global_time )
+  endpoint.reliable_endpoint_update( global_context.server, global_time )
 
   global_context.client.num_acks = 0
   global_context.server.num_acks = 0
+
+  global_time += delta_time
+
+  pool.free(packet_data)
+  setTimeout(soak_iteration, 0)
 }
 
 
 function main() {
-  console.log( "[soak]\n" );
-
-  let num_iterations = -1
-
-  /*
-  //if(process.env.argv[1])
-  if ( argc == 2 )
-      num_iterations = atoi( argv[1] );
-  */
-
+  console.log( "[soak]\n" )
   soak_initialize()
-
-  let delta_time = 0.1
-
-  if (num_iterations > 0 ) {
-    for (let  i = 0; i < num_iterations; ++i ) {
-      soak_iteration( global_time )
-      global_time += delta_time
-    }
-  } else {
-    while (true) {
-      soak_iteration(global_time)
-      global_time += delta_time
-    }
-  }
-
-  return 0
+  soak_iteration()
 }
 
+let global_context, e, global_time = 100.0, delta_time = 0.1
 
 main()
