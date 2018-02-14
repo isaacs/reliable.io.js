@@ -59,7 +59,7 @@ function fuzz_iteration() {
 
   pool.free(packet_data)
 
-  setTimeout(fuzz_iteration, 0)
+  process.nextTick(fuzz_iteration)
 }
 
 

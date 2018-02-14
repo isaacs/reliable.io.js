@@ -129,7 +129,7 @@ function soak_iteration() {
   global_time += delta_time
 
   pool.free(packet_data)
-  setTimeout(soak_iteration, 0)
+  process.nextTick(soak_iteration)
 }
 
 
