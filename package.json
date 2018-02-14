@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/mreinstein/reliable.io.js#readme",
   "engines": {
-    "node": ">= 6.x.x"
+    "node": ">= 4"
   },
   "devDependencies": {
     "debug": "^3.1.0",
