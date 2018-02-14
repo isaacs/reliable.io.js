@@ -2,9 +2,13 @@
 
 const endpoint = require('./lib/endpoint')
 const pool     = require('./lib/pool-uint8array')
+const { reliable_log_level } = require('./lib/printf')
 
 
 const MAX_PACKET_BYTES = (16*1024)
+const RELIABLE_LOG_LEVEL_DEBUG = 3
+
+reliable_log_level(RELIABLE_LOG_LEVEL_DEBUG)
 
 
 function assert(param) {

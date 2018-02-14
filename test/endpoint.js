@@ -25,7 +25,6 @@ function test_transmit_packet_function(context, index, sequence, packet_data, pa
   if (context.drop)
     return
 
-  //console.log('receiveth packet', index, 'seq:', sequence, 'bytes:', packet_bytes, 'dat0', packet_data[0], 'dat1', packet_data[1])
   if (index === 0)
     endpoint.reliable_endpoint_receive_packet(context.receiver, packet_data, packet_bytes)
   else if (index == 1)
