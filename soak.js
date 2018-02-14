@@ -3,7 +3,7 @@
 const endpoint = require('./lib/endpoint')
 
 
-const MAX_PACKET_BYTES = 1024 //(16*1024)
+const MAX_PACKET_BYTES = (16*1024)
 
 
 function assert(param) {
@@ -60,11 +60,10 @@ function check_packet_data(packet_data, packet_bytes )
   sequence |= packet_data[0]
   sequence |= (packet_data[1] << 8)
 
-  // TODO: why does enabling this throw an error
-  //assert(packet_bytes == ( (sequence * 1023) % ( MAX_PACKET_BYTES - 2 ) ) + 2 )
+  assert(packet_bytes == ( (sequence * 1023) % ( MAX_PACKET_BYTES - 2 ) ) + 2 )
 
-  //for (let i = 2; i < packet_bytes; ++i )
-  //  assert( packet_data[i] == ( (i + sequence) % 256 ) )
+  for (let i = 2; i < packet_bytes; ++i )
+    assert( packet_data[i] == ( (i + sequence) % 256 ) )
 }
 
 
@@ -91,8 +90,8 @@ function soak_initialize()
   endpoint.reliable_default_config(client_config)
   endpoint.reliable_default_config(server_config)
 
-  //client_config.fragment_above = 500
-  //server_config.fragment_above = 500
+  client_config.fragment_above = 500
+  server_config.fragment_above = 500
 
   client_config.name = 'client'
   client_config.context = global_context

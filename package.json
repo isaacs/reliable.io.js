@@ -7,7 +7,7 @@
   "scripts": {
     "fuzz": "DEBUG=reliable.io node fuzz",
     "soak": "DEBUG=reliable.io node soak",
-    "test": "DEBUG=reliable.io node ./node_modules/.bin/tap test"
+    "test": "DEBUG=reliable.io node ./node_modules/.bin/tap test --no-timeout"
   },
   "repository": {
     "type": "git",
