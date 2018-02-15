@@ -204,6 +204,9 @@ test('test_acks', function(t) {
   for ( i = 0; i < TEST_ACKS_NUM_ITERATIONS / 2; ++i )
     t.equal( receiver_acked_packet[i], 1)
 
+  endpoint.reliable_endpoint_destroy(context.sender)
+  endpoint.reliable_endpoint_destroy(context.receiver)
+
   t.end()
 })
 
@@ -280,6 +283,9 @@ test('acks_packet_loss', function(t) {
 
   for ( i = 0; i < TEST_ACKS_NUM_ITERATIONS / 2; ++i )
     t.equal( receiver_acked_packet[i], (i+1) % 2)
+
+  endpoint.reliable_endpoint_destroy(context.sender)
+  endpoint.reliable_endpoint_destroy(context.receiver)
 
   t.end()
 })
@@ -379,6 +385,8 @@ test('packets', function(t) {
     time += delta_time
   }
 
+  endpoint.reliable_endpoint_destroy(context.sender)
+  endpoint.reliable_endpoint_destroy(context.receiver)
+
   t.end()
 })
-
