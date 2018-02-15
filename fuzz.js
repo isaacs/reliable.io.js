@@ -1,10 +1,9 @@
 'use strict'
 
 const endpoint = require('./lib/endpoint')
-const pool     = require('./lib/pool-uint8array')
 
 
-const MAX_PACKET_BYTES = 1024 //(16*1024)
+const MAX_PACKET_BYTES = (16*1024)
 
 
 function assert(param) {
@@ -23,9 +22,8 @@ function random_int(a, b) {
 }
 
 
-function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes ) {
+function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes ) { }
 
-}
 
 function test_process_packet_function( context, index, sequence, packet_data, packet_bytes ) {
   return 1
@@ -44,7 +42,7 @@ function fuzz_initialize() {
 
 
 function fuzz_iteration() {
-  let packet_data = pool.malloc(MAX_PACKET_BYTES)
+  let packet_data = new Uint8Array(MAX_PACKET_BYTES)
 
   let packet_bytes = random_int(1, MAX_PACKET_BYTES)
 
@@ -56,8 +54,6 @@ function fuzz_iteration() {
   endpoint.num_acks = 0
 
   global_time += delta_time
-
-  pool.free(packet_data)
 
   process.nextTick(fuzz_iteration)
 }

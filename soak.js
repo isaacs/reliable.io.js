@@ -1,7 +1,6 @@
 'use strict'
 
 const endpoint = require('./lib/endpoint')
-const pool     = require('./lib/pool-uint8array')
 const { reliable_log_level } = require('./lib/printf')
 
 
@@ -27,7 +26,7 @@ function random_int(a, b) {
 }
 
 
-function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes ) {
+function test_transmit_packet_function( context, index, sequence, packet_data, packet_bytes) {
 
   if ( random_int(0,100) < 5 )
     return
@@ -39,7 +38,7 @@ function test_transmit_packet_function( context, index, sequence, packet_data, p
 }
 
 
-function generate_packet_data(sequence, packet_data ) {
+function generate_packet_data(sequence, packet_data) {
   let packet_bytes = ( ( sequence * 1023 ) % ( MAX_PACKET_BYTES - 2 ) ) + 2
   assert( packet_bytes >= 2 )
   assert( packet_bytes <= MAX_PACKET_BYTES )
@@ -52,8 +51,7 @@ function generate_packet_data(sequence, packet_data ) {
 }
 
 
-function check_packet_data(packet_data, packet_bytes )
-{
+function check_packet_data(packet_data, packet_bytes) {
   assert( packet_bytes >= 2 )
   assert( packet_bytes <= MAX_PACKET_BYTES )
 
@@ -68,7 +66,7 @@ function check_packet_data(packet_data, packet_bytes )
 }
 
 
-function test_process_packet_function( context, index, sequence, packet_data, packet_bytes ) {
+function test_process_packet_function( context, index, sequence, packet_data, packet_bytes) {
   assert( packet_data )
   assert( packet_bytes > 0 )
   assert( packet_bytes <= MAX_PACKET_BYTES )
@@ -79,8 +77,7 @@ function test_process_packet_function( context, index, sequence, packet_data, pa
 
 
 
-function soak_initialize()
-{
+function soak_initialize() {
   console.log( "initializing\n" )
 
   global_context = { }
@@ -112,7 +109,7 @@ function soak_initialize()
 
 
 function soak_iteration() {
-  const packet_data = pool.malloc(MAX_PACKET_BYTES)
+  const packet_data = new Uint8Array(MAX_PACKET_BYTES)
   packet_data.fill(0)
 
   let sequence = global_context.client.sequence
@@ -134,7 +131,6 @@ function soak_iteration() {
 
   global_time += delta_time
 
-  pool.free(packet_data)
   //process.nextTick(soak_iteration)
 }
 

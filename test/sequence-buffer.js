@@ -1,6 +1,5 @@
 'use strict'
 
-const pool = require('../lib/pool-uint8array')
 const sb   = require('../lib/sequence-buffer')
 const test = require('tap').test
 
@@ -11,33 +10,17 @@ const TEST_SEQUENCE_BUFFER_SIZE = 256
 const MAX_PACKET_SIZE = 1024
 
 
-function default_alloc() {
+function allocator() {
   return {
     acked: false,
+    message: new Uint8Array(MAX_PACKET_SIZE),
     sent_time: 0,
-    message: pool.malloc(MAX_PACKET_SIZE),
-    byteLength: 0,
-    includedMessages: []
+    sequence: 0
   }
-}
-
-
-function default_free(entry_data) {
-  if(!entry_data.message)
-    return
-  pool.free(entry_data.message)
-  entry_data.message = null
 }
 
 
 test('sequence_buffer', function(t) {
-
-  const allocator = function() {
-    return {
-      sequence: 0
-    }
-  }
-
   let sequence_buffer = sb.reliable_sequence_buffer_create(TEST_SEQUENCE_BUFFER_SIZE, allocator)
 
   t.ok(sequence_buffer)
@@ -89,7 +72,7 @@ test('sequence_buffer', function(t) {
 
 // from https://github.com/networkprotocol/reliable.io/blob/4bd1cc77701c80d00d12907e5b5a73aa26b3d29a/reliable.c#L1584
 test('generate_ack_bits', function(t) {
-  let sequence_buffer = sb.reliable_sequence_buffer_create(TEST_SEQUENCE_BUFFER_SIZE, default_alloc, default_free)
+  let sequence_buffer = sb.reliable_sequence_buffer_create(TEST_SEQUENCE_BUFFER_SIZE, allocator)
 
   const ack_struct = { ack: 0, ack_bits: 0xFFFFFFFF }
 
@@ -128,7 +111,7 @@ test('generate_ack_bits', function(t) {
 
 test('create', function(t) {
   const num_entries = 256
-  const sequence_buffer = sb.reliable_sequence_buffer_create(num_entries, default_alloc, default_free)
+  const sequence_buffer = sb.reliable_sequence_buffer_create(num_entries, allocator)
 
   t.ok(sequence_buffer)
   t.equal(sequence_buffer.num_entries, num_entries)
@@ -141,7 +124,7 @@ test('create', function(t) {
 
 test('insert', function(t) {
   const num_entries = 256
-  const s = sb.reliable_sequence_buffer_create(num_entries, default_alloc, default_free)
+  const s = sb.reliable_sequence_buffer_create(num_entries, allocator)
 
   let sequence = 14
   let packet = sb.reliable_sequence_buffer_insert(s, sequence)
@@ -160,7 +143,7 @@ test('insert', function(t) {
 
 test('remove', function(t) {
   const num_entries = 256
-  const s = sb.reliable_sequence_buffer_create(num_entries, default_alloc, default_free)
+  const s = sb.reliable_sequence_buffer_create(num_entries, allocator)
 
   let sequence = 60
   sb.reliable_sequence_buffer_insert(s, sequence)
@@ -177,7 +160,7 @@ test('remove', function(t) {
 
 test('find', function(t) {
   const num_entries = 256
-  const s = sb.reliable_sequence_buffer_create(num_entries, default_alloc, default_free)
+  const s = sb.reliable_sequence_buffer_create(num_entries, allocator)
 
   let sequence = 100
 
@@ -195,7 +178,7 @@ test('find', function(t) {
 test('generate ack bits', function(t) {
 
   const num_entries = 256
-  const s = sb.reliable_sequence_buffer_create(num_entries, default_alloc, default_free)
+  const s = sb.reliable_sequence_buffer_create(num_entries, allocator)
 
 
   sb.reliable_sequence_buffer_insert(s, 200).acked = true
