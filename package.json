@@ -8,7 +8,7 @@
     "fuzz": "DEBUG=reliable.io node fuzz",
     "soak": "DEBUG=reliable.io node soak",
     "test": "tap test -C",
-    "test-local": "DEBUG=reliable.io node ./node_modules/.bin/tap test -C"
+    "test-local": "DEBUG=reliable.io node ./node_modules/.bin/tap test"
   },
   "repository": {
     "type": "git",

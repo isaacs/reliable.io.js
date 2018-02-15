@@ -56,9 +56,10 @@ function check_packet_data(packet_data, packet_bytes )
 {
   assert( packet_bytes >= 2 )
   assert( packet_bytes <= MAX_PACKET_BYTES )
-  let sequence = 0;
-  sequence |= packet_data[0]
-  sequence |= (packet_data[1] << 8)
+
+  let sequence = (packet_data[1] << 8)
+  sequence = sequence + (packet_data[0] & 0xFF)
+  sequence = sequence >>> 0
 
   assert(packet_bytes == ( (sequence * 1023) % ( MAX_PACKET_BYTES - 2 ) ) + 2 )
 
@@ -122,6 +123,7 @@ function soak_iteration() {
 
   sequence = global_context.server.sequence
   packet_bytes = generate_packet_data( sequence, packet_data )
+
   endpoint.reliable_endpoint_send_packet( global_context.server, packet_data, packet_bytes )
 
   endpoint.reliable_endpoint_update( global_context.client, global_time )
@@ -133,14 +135,17 @@ function soak_iteration() {
   global_time += delta_time
 
   pool.free(packet_data)
-  process.nextTick(soak_iteration)
+  //process.nextTick(soak_iteration)
 }
 
 
 function main() {
   console.log( "[soak]\n" )
   soak_initialize()
-  soak_iteration()
+
+  while(true) {
+    soak_iteration()
+  }
 }
 
 let global_context, e, global_time = 100.0, delta_time = 0.1
